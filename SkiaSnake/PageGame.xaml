@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SkiaSnake.PageGame">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             x:Class="SkiaSnake.PageGame"
+             BackgroundColor="Black">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <forms:SKGLView Margin ="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="SKGLView_PaintSurface" EnableTouchEvents="True" Touch="SKGLView_Touch" x:Name="GameSurface" HasRenderLoop="True"/>
     </ContentPage.Content>
 </ContentPage>

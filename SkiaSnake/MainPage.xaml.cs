@@ -14,5 +14,10 @@ namespace SkiaSnake
         {
             InitializeComponent();
         }
+
+        private async void ButtonPlay_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PageGame());
+        }
     }
 }
