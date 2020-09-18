@@ -19,6 +19,8 @@ namespace SkiaSnake.Droid
 
             base.OnCreate(savedInstanceState);
             RequestedOrientation = ScreenOrientation.Landscape;
+            Window.AddFlags(WindowManagerFlags.Fullscreen);
+            Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);

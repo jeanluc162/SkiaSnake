@@ -4,6 +4,6 @@
              x:Class="SkiaSnake.PageGame"
              BackgroundColor="Black">
     <ContentPage.Content>
-        <forms:SKGLView Margin ="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="SKGLView_PaintSurface" EnableTouchEvents="True" Touch="SKGLView_Touch" x:Name="GameSurface" HasRenderLoop="True"/>
+        <forms:SKGLView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="SKGLView_PaintSurface" EnableTouchEvents="True" Touch="SKGLView_Touch" x:Name="GameSurface" HasRenderLoop="True"/>
     </ContentPage.Content>
 </ContentPage>

@@ -13,6 +13,7 @@ namespace SkiaSnake
         public MainPage()
         {
             InitializeComponent();
+            NavigationPage.SetHasNavigationBar(this, false);
         }
 
         private async void ButtonPlay_Clicked(object sender, EventArgs e)
