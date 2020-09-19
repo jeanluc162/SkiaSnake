@@ -17,11 +17,13 @@ namespace SkiaSnake
         private Int32 Highscore = 0;
         private List<int[]> SnakeSegments = new List<int[]>();
         private List<int[]> Edibles = new List<int[]>();
+        private Dictionary<Directions, List<int[]>> Buttons = new Dictionary<Directions, List<int[]>>();
         private Boolean ControlLocked = false;
         private Int32 GameWidth = -1;
         private Int32 GameHeight = -1;
         private Int32 BlockSize = -1;
         private Int32 BorderThickness = -1;
+        private SKPaint TransparentGray = new SKPaint { Color = SKColors.Black.WithAlpha(96) }; //Button
         private SKPaint BlackPaint = new SKPaint { Color = SKColors.Black }; //Snake & Borders
         private SKPaint BrownPaint = new SKPaint { Color = SKColors.Brown }; //Snakehead
         private SKPaint WhitePaint = new SKPaint { Color = SKColors.White }; //Highscore
@@ -184,6 +186,52 @@ namespace SkiaSnake
 
                 HighscoreFont.Size = BlockSize;
 
+                //Create the Buttons
+                //Left
+                Buttons.Add(Directions.Left, new List<int[]>());
+                Buttons[Directions.Left].Add(new int[] { 0, VerticalBlockCount - 3 });
+                Buttons[Directions.Left].Add(new int[] { 0, VerticalBlockCount - 4 });
+                Buttons[Directions.Left].Add(new int[] { 1, VerticalBlockCount - 3 });
+                Buttons[Directions.Left].Add(new int[] { 1, VerticalBlockCount - 4 });
+                Buttons[Directions.Left].Add(new int[] { HorizontalBlockCount - 5, VerticalBlockCount - 3 });
+                Buttons[Directions.Left].Add(new int[] { HorizontalBlockCount - 5, VerticalBlockCount - 4 });
+                Buttons[Directions.Left].Add(new int[] { HorizontalBlockCount - 6, VerticalBlockCount - 3 });
+                Buttons[Directions.Left].Add(new int[] { HorizontalBlockCount - 6, VerticalBlockCount - 4 });
+
+                //Right
+                Buttons.Add(Directions.Right, new List<int[]>());
+                Buttons[Directions.Right].Add(new int[] { 4, VerticalBlockCount - 3 });
+                Buttons[Directions.Right].Add(new int[] { 4, VerticalBlockCount - 4 });
+                Buttons[Directions.Right].Add(new int[] { 5, VerticalBlockCount - 3 });
+                Buttons[Directions.Right].Add(new int[] { 5, VerticalBlockCount - 4 });
+                Buttons[Directions.Right].Add(new int[] { HorizontalBlockCount - 2, VerticalBlockCount - 3 });
+                Buttons[Directions.Right].Add(new int[] { HorizontalBlockCount - 2, VerticalBlockCount - 4 });
+                Buttons[Directions.Right].Add(new int[] { HorizontalBlockCount - 1, VerticalBlockCount - 3 });
+                Buttons[Directions.Right].Add(new int[] { HorizontalBlockCount - 1, VerticalBlockCount - 4 });
+
+                //Up
+                Buttons.Add(Directions.Up, new List<int[]>());
+                Buttons[Directions.Up].Add(new int[] { 2, VerticalBlockCount - 5 });
+                Buttons[Directions.Up].Add(new int[] { 2, VerticalBlockCount - 6 });
+                Buttons[Directions.Up].Add(new int[] { 3, VerticalBlockCount - 5 });
+                Buttons[Directions.Up].Add(new int[] { 3, VerticalBlockCount - 6 });
+                Buttons[Directions.Up].Add(new int[] { HorizontalBlockCount - 4, VerticalBlockCount - 5 });
+                Buttons[Directions.Up].Add(new int[] { HorizontalBlockCount - 4, VerticalBlockCount - 6 });
+                Buttons[Directions.Up].Add(new int[] { HorizontalBlockCount - 3, VerticalBlockCount - 5 });
+                Buttons[Directions.Up].Add(new int[] { HorizontalBlockCount - 3, VerticalBlockCount - 6 });
+
+                //Down
+                Buttons.Add(Directions.Down, new List<int[]>());
+                Buttons[Directions.Down].Add(new int[] { 2, VerticalBlockCount - 1 });
+                Buttons[Directions.Down].Add(new int[] { 2, VerticalBlockCount - 2 });
+                Buttons[Directions.Down].Add(new int[] { 3, VerticalBlockCount - 1 });
+                Buttons[Directions.Down].Add(new int[] { 3, VerticalBlockCount - 2 });
+                Buttons[Directions.Down].Add(new int[] { HorizontalBlockCount - 4, VerticalBlockCount - 1 });
+                Buttons[Directions.Down].Add(new int[] { HorizontalBlockCount - 4, VerticalBlockCount - 2 });
+                Buttons[Directions.Down].Add(new int[] { HorizontalBlockCount - 3, VerticalBlockCount - 1 });
+                Buttons[Directions.Down].Add(new int[] { HorizontalBlockCount - 3, VerticalBlockCount - 2 });
+
+
                 //Create the Snake
                 SnakeSegments.Add(new int[] { HorizontalBlockCount / 2 + 1, VerticalBlockCount / 2 });
                 SnakeSegments.Add(new int[] { HorizontalBlockCount / 2, VerticalBlockCount / 2 });
@@ -210,7 +258,17 @@ namespace SkiaSnake
                 else e.Surface.Canvas.DrawRect(new SKRect(BorderThickness + SnakeSegments[i][0] * BlockSize, SnakeSegments[i][1] * BlockSize, BorderThickness + BlockSize + SnakeSegments[i][0] * BlockSize, BlockSize + SnakeSegments[i][1] * BlockSize), BlackPaint);
             }
 
+            //Draw Highscore
             e.Surface.Canvas.DrawText(Highscore.ToString(), BorderThickness * 2, HighscoreFont.Size,HighscoreFont, WhitePaint);
+
+            //Draw Buttons
+            foreach(Directions Button in Buttons.Keys)
+            {
+                foreach(int[] segment in Buttons[Button])
+                {
+                    e.Surface.Canvas.DrawRect(new SKRect(BorderThickness + segment[0] * BlockSize, segment[1] * BlockSize, BorderThickness + BlockSize + segment[0] * BlockSize, BlockSize + segment[1] * BlockSize), TransparentGray);
+                }
+            }
         }
 
         private void SKGLView_Touch(object sender, SkiaSharp.Views.Forms.SKTouchEventArgs e)
@@ -218,48 +276,38 @@ namespace SkiaSnake
             if(e.Id == 0)
             {
                 if(e.ActionType == SkiaSharp.Views.Forms.SKTouchAction.Pressed && !ControlLocked)
-                {                    
+                {
+                    Int32 SegX, SegY;
                     System.Diagnostics.Debug.WriteLine("Current Direction: " + _Direction.ToString());
                     System.Diagnostics.Debug.WriteLine("Touch at: " + e.Location.X + "|" + e.Location.Y);
-                    if (e.Location.X > GameWidth/2)
+                    SegX = (Int32)(e.Location.X / BlockSize);
+                    SegY = (Int32)(e.Location.Y / BlockSize);
+                    System.Diagnostics.Debug.WriteLine("Segment touched: " + SegX + "|" + SegY);
+
+                    foreach(Directions direction in Buttons.Keys)
                     {
-                        System.Diagnostics.Debug.WriteLine("Right Side of the Screen has been touched. Turning Right.");
-                        switch(_Direction)
+                        Directions found = _Direction;
+                        Boolean stop = false;
+                        foreach(int[] ButtonSegment in Buttons[direction])
                         {
-                            case Directions.Up:
-                                _Direction = Directions.Right;
+                            if(ButtonSegment[0] == SegX && ButtonSegment[1] == SegY)
+                            {
+                                stop = true;
+                                found = direction;
                                 break;
-                            case Directions.Right:
-                                _Direction = Directions.Down;
-                                break;
-                            case Directions.Down:
-                                _Direction = Directions.Left;
-                                break;
-                            case Directions.Left:
-                                _Direction = Directions.Up;
-                                break;
+                            }
                         }
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("Left Side of the Screen has been touched. Turning Left.");
-                        switch (_Direction)
+                        if (stop)
                         {
-                            case Directions.Up:
-                                _Direction = Directions.Left;
-                                break;
-                            case Directions.Left:
-                                _Direction = Directions.Down;
-                                break;
-                            case Directions.Down:
-                                _Direction = Directions.Right;
-                                break;
-                            case Directions.Right:
-                                _Direction = Directions.Up;
-                                break;
+                            if(_Direction != found)
+                            {
+                                if ((_Direction == Directions.Up && found == Directions.Down) || (_Direction == Directions.Down && found == Directions.Up) || (_Direction == Directions.Left && found == Directions.Right) || (_Direction == Directions.Right && found == Directions.Left)) break;
+                                _Direction = found;
+                                ControlLocked = true;
+                            }                 
+                            break;
                         }
-                    }
-                    ControlLocked = true;
+                    }                    
                     System.Diagnostics.Debug.WriteLine("Current Direction: " + _Direction.ToString());
                 }
             }
