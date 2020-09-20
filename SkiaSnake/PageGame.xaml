@@ -4,6 +4,39 @@
              x:Class="SkiaSnake.PageGame"
              BackgroundColor="Black">
     <ContentPage.Content>
-        <forms:SKGLView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="SKGLView_PaintSurface" EnableTouchEvents="True" Touch="SKGLView_Touch" x:Name="GameSurface" HasRenderLoop="True"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <forms:SKGLView Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="SKGLView_PaintSurface" EnableTouchEvents="True" Touch="SKGLView_Touch" x:Name="GameSurface" HasRenderLoop="True"/>
+
+            <Grid IsVisible="false" x:Name="HighScoreGrid" Grid.Row="1" Grid.Column="1" BackgroundColor="#BF808080">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label FontSize="Large" Text="Game Over!" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="White"/>
+                <Label FontSize="Medium" Text="Your Highscore:" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" HorizontalTextAlignment="End" FontAttributes="Bold" TextColor="White" Margin="5"/>
+                <Label FontSize="Medium" Text="0" Grid.Row="1" Grid.Column="1" VerticalTextAlignment="Center" FontAttributes="Italic" TextColor="White" x:Name="HighscoreLabel" Margin="5"/>
+                <Label FontSize="Medium" Text="Name:" Grid.Row="2" Grid.Column="0" VerticalTextAlignment="Center" FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="End" Margin="5"/>
+                <Entry FontSize="Medium" Text="" Grid.Row="2" Grid.Column="1" VerticalTextAlignment="Center" FontAttributes="Italic" TextColor="White" Margin="5" x:Name="EntryName"/>
+
+                <Button Grid.Row="4" Grid.Column="0" Text="Cancel" x:Name="ButtonCancel" FontSize="Medium" FontAttributes="Bold" Clicked="ButtonCancel_Clicked" Margin="5"/>
+                <Button Grid.Row="4" Grid.Column="1" Text="Save" x:Name="ButtonSave" FontSize="Medium" FontAttributes="Bold" Clicked="ButtonSave_Clicked" Margin="5"/>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

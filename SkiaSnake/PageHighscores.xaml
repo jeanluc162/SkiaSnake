@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:skiasnake="clr-namespace:SkiaSnake"
+             x:Class="SkiaSnake.PageHighscores">
+    <ContentPage.BindingContext>
+        <skiasnake:HighscoreVM/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Text="Highscores" FontSize="Large" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Margin="20"/>
+            <ListView ItemsSource="{Binding Highscores}" Grid.Column="0" Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Key}" VerticalTextAlignment="Center" Margin="3"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Value}" VerticalTextAlignment="Center" Margin="3" HorizontalTextAlignment="End"/>
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

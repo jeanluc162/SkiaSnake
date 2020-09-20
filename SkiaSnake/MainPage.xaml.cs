@@ -20,5 +20,10 @@ namespace SkiaSnake
         {
             await Navigation.PushAsync(new PageGame());
         }
+
+        private async void ButtonHighscores_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PageHighscores());
+        }
     }
 }

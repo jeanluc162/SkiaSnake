@@ -41,6 +41,7 @@ namespace SkiaSnake
 
         private Boolean GameLoop()
         {
+            Boolean HighscoreIncreased = false;
             int[] LastSegmentCache = new int[2]; //Used for elongating the snek
             Boolean ate = false;
             for(int i = Edibles.Count - 1; i >= 0; i--)
@@ -49,6 +50,8 @@ namespace SkiaSnake
                 {
                     ate = true;
                     Highscore++;
+                    HighscoreLabel.Text = Highscore.ToString();
+                    HighscoreIncreased = true;
                     Edibles.RemoveAt(i);
                     break;
                 }
@@ -74,10 +77,8 @@ namespace SkiaSnake
                             if(SnakeSegments[i][1] - 1 < 0)
                             {
                                 System.Diagnostics.Debug.WriteLine("Snake out of Bounds!");
-                                Device.BeginInvokeOnMainThread(() =>
-                                {
-                                    Application.Current.MainPage.Navigation.PopAsync();
-                                });
+                                GameSurface.HasRenderLoop = false;
+                                HighScoreGrid.IsVisible = true;
                                 return false;
                             }
                             SnakeSegments[i][1]--;
@@ -86,10 +87,8 @@ namespace SkiaSnake
                             if (SnakeSegments[i][0] + 1 >= HorizontalBlockCount)
                             {
                                 System.Diagnostics.Debug.WriteLine("Snake out of Bounds!");
-                                Device.BeginInvokeOnMainThread(() =>
-                                {
-                                    Application.Current.MainPage.Navigation.PopAsync();
-                                });
+                                GameSurface.HasRenderLoop = false;
+                                HighScoreGrid.IsVisible = true;
                                 return false;
                             }
                             SnakeSegments[i][0]++;
@@ -98,10 +97,8 @@ namespace SkiaSnake
                             if (SnakeSegments[i][0] - 1 < 0)
                             {
                                 System.Diagnostics.Debug.WriteLine("Snake out of Bounds!");
-                                Device.BeginInvokeOnMainThread(() =>
-                                {
-                                    Application.Current.MainPage.Navigation.PopAsync();
-                                });
+                                GameSurface.HasRenderLoop = false;
+                                HighScoreGrid.IsVisible = true;
                                 return false;
                             }
                             SnakeSegments[i][0]--;
@@ -110,10 +107,8 @@ namespace SkiaSnake
                             if (SnakeSegments[i][1] + 1 >= VerticalBlockCount)
                             {
                                 System.Diagnostics.Debug.WriteLine("Snake out of Bounds!");
-                                Device.BeginInvokeOnMainThread(() =>
-                                {
-                                    Application.Current.MainPage.Navigation.PopAsync();
-                                });
+                                GameSurface.HasRenderLoop = false;
+                                HighScoreGrid.IsVisible = true;
                                 return false;
                             }
                             SnakeSegments[i][1]++;
@@ -130,10 +125,8 @@ namespace SkiaSnake
                 if (SnakeSegments[i][0] == SnakeSegments[0][0] && SnakeSegments[i][1] == SnakeSegments[0][1]) //Snake Colided with itself
                 {
                     System.Diagnostics.Debug.WriteLine("Snake ate itself!");
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        Application.Current.MainPage.Navigation.PopAsync();
-                    });
+                    GameSurface.HasRenderLoop = false;
+                    HighScoreGrid.IsVisible = true;
                     return false;
                 }
             }
@@ -169,8 +162,12 @@ namespace SkiaSnake
             }
             ControlLocked = false; //Reenables user input
 
-
-            return true;
+            if (HighscoreIncreased && Highscore*5 <= 400)
+            {
+                Device.StartTimer(new TimeSpan(0, 0, 0, 0, 500-Highscore*5), GameLoop);
+                return false;
+            }
+            else return true;
         }
         private void SKGLView_PaintSurface(object sender, SkiaSharp.Views.Forms.SKPaintGLSurfaceEventArgs e)
         {
@@ -312,6 +309,17 @@ namespace SkiaSnake
                 }
             }
             e.Handled = true;
+        }
+
+        private void ButtonCancel_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PopAsync();
+        }
+
+        private void ButtonSave_Clicked(object sender, EventArgs e)
+        {
+            HighscoreHandler.AddHighscore(EntryName.Text, Highscore);
+            Application.Current.MainPage.Navigation.PopAsync();
         }
     }
 }
